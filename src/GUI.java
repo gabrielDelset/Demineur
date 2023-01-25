@@ -1,4 +1,4 @@
-//voici le code que nous avons pour l'instant générer
+//annalyse moi ce code
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -69,22 +69,24 @@ public class GUI extends JPanel implements ActionListener {
             champ.emptyMines();
             champ.placeMines();
             initGrid();
+            checkWin();
         }
         if (e.getSource()==itemQuit){
             System.exit( 0);
         }else if (e.getSource()==itemNetwork){
             connectNetwork();
+            checkWin();
         }
     }
 
     private void initGrid() {
         for (int row = 0; row < champ.getHeight(); row++) {
-            for (int col = 0; col < champ.getWidth(); col++) {
+            for (int col = 0; col < champ.getWidth(); col++) {                  //2 boucles for pour parcourir tout le tableau
                 MineLabel minelabel = minesLabels[row][col];
-                minelabel.setBorder(new LineBorder(Color.BLACK, 1));
-                minelabel.setHorizontalAlignment(JLabel.CENTER);
+                minelabel.setBorder(new LineBorder(Color.BLACK, 1));    //créer les bordures des cases
+                minelabel.setHorizontalAlignment(JLabel.CENTER);                //Met les labels au centres
                 minelabel.setVisible(true);
-                if (champ.isMine(row, col)) {
+                if (champ.isMine(row, col)) {                                   //vérifie si le champ est une mine, et si oui déclare un événement qui permet de mettre din a la partie
                     minelabel.addMouseListener(new MouseAdapter() {
                         public void mousePressed(MouseEvent e) {
                             JOptionPane.showMessageDialog(null, "Vous avez perdu !", "Fin de partie", JOptionPane.ERROR_MESSAGE);
@@ -94,11 +96,9 @@ public class GUI extends JPanel implements ActionListener {
                 } else {
                     minelabel.addMouseListener(new MouseAdapter() {
                         public void mousePressed(MouseEvent e) {
-                            minelabel.setText(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) + "");
+                            minelabel.setText(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) + "");      //permet d'afficher le nombre de mine a proximité
                             minelabel.setVisible(true);
-                            if(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) == 0){
-                                expandEmptyArea(minelabel.getRow(), minelabel.getCol());
-                            }
+                            checkWin();
                         }
                     });
                 }
@@ -106,7 +106,7 @@ public class GUI extends JPanel implements ActionListener {
         }
     }
 
-    private void expandEmptyArea(int row, int col) {
+    private void expandEmptyArea(int row, int col) {             //fonction qui sert a l'expension mais elle ne fonctionne pas bien
         if(!champ.isInBounds(row, col)){
             return;
         }
@@ -131,27 +131,38 @@ public class GUI extends JPanel implements ActionListener {
         }
     }
 
-    // cette fonction vérifie si la case est vide ou non
-
-
-
+    private void checkWin() {
+        boolean win = true;
+        for (int row = 0; row < champ.getHeight(); row++) {
+            for (int col = 0; col < champ.getWidth(); col++) {
+                MineLabel minelabel = minesLabels[row][col];
+                if (!champ.isMine(row, col) && minelabel.isVisible()) {
+                    win = false;
+                    break;
+                }
+            }
+        }
+        if (win) {
+            JOptionPane.showMessageDialog(null, "Vous avez gagné !", "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 
     private class MineLabel extends JLabel {
         private int row, col;
-        public MineLabel(int mineRow, int mineCol) {
+        public MineLabel(int mineRow, int mineCol) {                           // constructeur de la classe MineLabel
             super("");
             setPreferredSize(new Dimension(50, 50));
             row = mineRow;
             col = mineCol;
-            this.addMouseListener(new MouseAdapter() {
+            this.addMouseListener(new MouseAdapter() {                          // ajout d'un MouseListener pour détecter un clic sur une case
                 public void mousePressed(MouseEvent e) {
-                    if (champ.isMine(row, col)) {
+                    if (champ.isMine(row, col)) {                               // si cliqué sur mine : fin de la partie
                         JOptionPane.showMessageDialog(null, "Game over", "You lost", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
         }
-        public int getRow() { return row; }
+        public int getRow() { return row; }                                  //retournes les coordonnées de la case
         public int getCol() { return col; }
     }
 

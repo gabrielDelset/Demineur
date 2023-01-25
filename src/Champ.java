@@ -2,9 +2,9 @@
 import java.util.Random;
 
 public class Champ {
-    final static int N_MINES = 10;
-    final static int HEIGHT = 10;
-    final static int WIDTH = 10;
+    final static int N_MINES = 1;
+    final static int HEIGHT = 3;
+    final static int WIDTH = 3;
     private boolean [][] mines = new boolean[HEIGHT][WIDTH];
 
     private Random rng = new Random();
