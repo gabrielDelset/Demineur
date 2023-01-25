@@ -55,6 +55,27 @@ public class Champ {
         return nbMinesProximite;
     }
 
+    public boolean isEmpty(int row, int col) {
+        if(!isInBounds(row, col)){
+            return false;
+        }
+        if(isMine(row, col)){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isInBounds(int row, int col) {
+// Vérifie si les coordonnées de la case sont valides (dans les limites de la grille)
+        if (row < 0 || row >= getHeight()) {
+            return false;
+        }
+        if (col < 0 || col >= getWidth()) {
+            return false;
+        }
+        return true;
+    }
+
     public int getWidth() {
         return mines[0].length;
     }
@@ -70,4 +91,7 @@ public class Champ {
     public void didier() {
         // do nothing
     }
+
+
+
 }

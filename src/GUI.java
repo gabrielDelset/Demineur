@@ -85,7 +85,6 @@ public class GUI extends JPanel implements ActionListener {
                 minelabel.setHorizontalAlignment(JLabel.CENTER);
                 minelabel.setVisible(true);
                 if (champ.isMine(row, col)) {
-
                     minelabel.addMouseListener(new MouseAdapter() {
                         public void mousePressed(MouseEvent e) {
                             JOptionPane.showMessageDialog(null, "Vous avez perdu !", "Fin de partie", JOptionPane.ERROR_MESSAGE);
@@ -97,12 +96,43 @@ public class GUI extends JPanel implements ActionListener {
                         public void mousePressed(MouseEvent e) {
                             minelabel.setText(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) + "");
                             minelabel.setVisible(true);
+                            if(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) == 0){
+                                expandEmptyArea(minelabel.getRow(), minelabel.getCol());
+                            }
                         }
                     });
                 }
             }
         }
     }
+
+    private void expandEmptyArea(int row, int col) {
+        if(!champ.isInBounds(row, col)){
+            return;
+        }
+        if(champ.isMine(row, col)){
+            return;
+        }
+        if(!champ.isEmpty(row, col)){
+            return;
+        }
+        MineLabel minelabel = minesLabels[row][col];
+        minelabel.setText(champ.getNbMinesProximite(row, col) + "");
+        minelabel.setVisible(true);
+        if(champ.getNbMinesProximite(row, col) == 0){
+            expandEmptyArea(row-1, col-1);
+            expandEmptyArea(row-1, col);
+            expandEmptyArea(row-1, col+1);
+            expandEmptyArea(row, col-1);
+            expandEmptyArea(row, col+1);
+            expandEmptyArea(row+1, col-1);
+            expandEmptyArea(row+1, col);
+            expandEmptyArea(row+1, col+1);
+        }
+    }
+
+    // cette fonction vérifie si la case est vide ou non
+
 
 
 
