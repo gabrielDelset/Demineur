@@ -1,5 +1,5 @@
 
-
+//voici le code que nous avons pour l'instant générer
 import javax.swing.*;
 
 public class Main extends JFrame {

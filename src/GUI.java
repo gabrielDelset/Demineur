@@ -1,3 +1,4 @@
+//voici le code que nous avons pour l'instant générer
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -82,66 +83,48 @@ public class GUI extends JPanel implements ActionListener {
                 MineLabel minelabel = minesLabels[row][col];
                 minelabel.setBorder(new LineBorder(Color.BLACK, 1));
                 minelabel.setHorizontalAlignment(JLabel.CENTER);
+                minelabel.setVisible(true);
                 if (champ.isMine(row, col)) {
-                    try {
-                        minelabel.setText("X");
-                       /* Image img = ImageIO.read(new File("bleu.jpg"));
-                        button.setIcon(new ImageIcon(img));*/
 
-                    } catch (Exception ex) {
-                        //   System.out.println(ex);
-                    }
-
-                }
-                else {
-                    try {
-                        minelabel.setText("0");
-                        //  Image img = ImageIO.read(new File("bleu.jpg"));
-                        //  button.setIcon(new ImageIcon(img));
-                    } catch (Exception ex) {
-                        //   System.out.println(ex);
-                    }
+                    minelabel.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent e) {
+                            JOptionPane.showMessageDialog(null, "Vous avez perdu !", "Fin de partie", JOptionPane.ERROR_MESSAGE);
+                            System.exit(0);
+                        }
+                    });
+                } else {
+                    minelabel.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent e) {
+                            minelabel.setText(champ.getNbMinesProximite(minelabel.getRow(), minelabel.getCol()) + "");
+                            minelabel.setVisible(true);
+                        }
+                    });
                 }
             }
         }
     }
 
+
+
     private class MineLabel extends JLabel {
-
         private int row, col;
-
-        MineLabel(int mineRow, int mineCol) {
+        public MineLabel(int mineRow, int mineCol) {
             super("");
             setPreferredSize(new Dimension(50, 50));
             row = mineRow;
             col = mineCol;
+            this.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    if (champ.isMine(row, col)) {
+                        JOptionPane.showMessageDialog(null, "Game over", "You lost", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
         }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getCol() {
-            return col;
-        }
+        public int getRow() { return row; }
+        public int getCol() { return col; }
     }
-      /*  private int row, col;
-        MineLabel(int mineRow, int mineCol) { this("", mineRow, mineCol); }
-        MineLabel(String text, int mineRow, int mineCol) {
-            super(text);
-            row = mineRow;
-            col = mineCol;
 
-
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getCol() {
-            return col;
-        }*/
 
 
     private class RestartButton extends JButton {
